@@ -66,6 +66,21 @@
   </div>
 </section>
 
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <h1 class="title has-text-centered">
+      </h1>
+      <!-- <video width="100%" height="100%" autoplay controls autoplay muted loop playsinline preload="metadata" style="max-height: 100%;">
+        <source src="./static/videos_compressed/0_teaser/All_Home.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video> -->
+      <img src="./static/images/teaser.png" alt="teaser" style="width: 100%; height: 100%; max-height: 100%; object-fit: cover;">
+      <!-- <div style="margin: 1rem 0;"></div> -->
+    </div>
+  </div>
+</section>
+
 <section class="section">
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
@@ -73,13 +88,828 @@
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            We present GOATex, a diffusion-based method for 3D mesh texturing that generates high-quality textures for both exterior and interior surfaces. While existing methods perform well on visible regions, they inherently lack mechanisms to handle occluded interiors, resulting in incomplete textures and visible seams. To address this, we introduce an occlusion-aware texturing framework based on the concept of hit levels, which quantify the relative depth of mesh faces via multi-view ray casting. This allows us to partition mesh faces into ordered visibility layers, from outermost to innermost. We then apply a two-stage visibility control strategy that progressively reveals interior regions with structural coherence, followed by texturing each layer using a pretrained diffusion model. To seamlessly merge textures obtained across layers, we propose a soft UV-space blending technique that weighs each texture’s contribution based on view-dependent visibility confidence. Empirical results demonstrate that GOATex consistently outperforms existing methods, producing seamless, high-fidelity textures across both visible and occluded surfaces. Unlike prior works, GOATex operates entirely without costly fine-tuning of a pretrained diffusion model and allows separate prompting for exterior and interior mesh regions, enabling fine-grained control over layered appearances.
+            We present GOATex, a diffusion-based method for 3D mesh texturing that generates high-quality textures for both exterior and interior surfaces. While existing methods perform well on visible regions, they inherently lack mechanisms to handle occluded interiors, resulting in incomplete textures and visible seams. To address this, we introduce an occlusion-aware texturing framework based on the concept of hit levels, which quantify the relative depth of mesh faces via multi-view ray casting. This allows us to partition mesh faces into ordered visibility layers, from outermost to innermost. We then apply a two-stage visibility control strategy that progressively reveals interior regions with structural coherence, followed by texturing each layer using a pretrained diffusion model. To seamlessly merge textures obtained across layers, we propose a soft UV-space blending technique that weighs each texture's contribution based on view-dependent visibility confidence. Empirical results demonstrate that GOATex consistently outperforms existing methods, producing seamless, high-fidelity textures across both visible and occluded surfaces. Unlike prior works, GOATex operates entirely without costly fine-tuning of a pretrained diffusion model and allows separate prompting for exterior and interior mesh regions, enabling fine-grained control over layered appearances.
           </p>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+
+
+<!-- <section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="column has-text-centered">
+      
+      <h1 class="title has-text-centered">
+        Detailed Views for Teaser Objects
+      </h1>
+
+      <div class="tabs is-centered">
+        <ul>
+          <li class="is-active">
+            <a href="#" onclick="changeVideo('./static/videos/1_qualitative/Ours_inner.mp4', event); return false;">
+              House
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="changeVideo('./static/videos/1_qualitative/Ours_inner.mp4', event); return false;">
+              Bus
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="changeVideo('./static/videos/1_qualitative/Ours_inner.mp4', event); return false;">
+              Theater
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="hero-body" id="videoWrapper">
+        <video id="categoryVideo" width="80%" height="80%" controls autoplay muted loop playsinline preload="metadata" style="max-height: 100%;">
+          <source id="categoryVideoSource" 
+                  src="./static/videos/1_qualitative/Ours_inner.mp4" 
+                  type="video/mp4"/>
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+
+
+
+<script>
+function changeVideo(videoSrc, event) {
+  event.preventDefault();
+  
+  document.querySelectorAll('.tabs ul li').forEach(li => {
+    li.classList.remove('is-active');
+  });
+
+  const clickedLi = event.target.closest('li');
+  clickedLi.classList.add('is-active');
+
+  const video = document.getElementById("categoryVideo");
+  const source = document.getElementById("categoryVideoSource");
+  source.src = videoSrc;
+  video.load();
+  video.play();
+}
+</script>
+
+<section class="hero is-light is-small">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <h1 class="title has-text-centered">
+        Main Pipeline
+      </h1>
+      <img src="./static/images/main_pipeline.png" alt="teaser" style="width: 100%; height: 100%; max-height: 100%; object-fit: cover;">
+      <div style="margin: 1rem 0;"></div>
+      <div class="content", style="max-width: none; width: 100%;">
+          <p>(1) Our framework begins with <b>superface construction</b>, grouping fine-grained faces into coherent regions.</p>
+          <p>(2) We then assign each superface <b>hit level</b> by casting rays from multiple viewpoints, indicating its relative depth within the mesh.</p>
+          <p>(3) Based on these hit levels, we apply a visibility control strategy, combining <i>residual face clustering</i> with <i>normal flipping</i> and <i>backface culling</i>, to progressively reveal interior geometry without disrupting the object's structural integrity.</p>
+          <p>(4) For each hit level, we synthesize textures using a depth-conditioned multi-view diffusion (MVD) module.</p>
+          <p>(5) We employ a soft, visibility-weighted <i>UV-blending</i> strategy to merge textures across levels, ensuring seamless and coherent appearance.</p>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div style="margin: 1rem 0;"></div>
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <h1 class="title has-text-centered">
+        Qualitative Comparisons
+      </h1>
+      <img src="./static/images/qualitative.png" alt="teaser" style="width: 100%; height: 100%; max-height: 100%; object-fit: cover;">
+      <div style="margin: 1rem 0;"></div>
+    </div>
+  </div>
+</section>
+
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+
+      <h1 class="title has-text-centered">
+        Qualitative Results
+      </h1>
+
+      <div class="content has-text-centered">
+        <p>
+          GOATex generates high-quality textures for both exterior and interior surfaces.
+        </p>
+      </div>
+
+        <div class="column">
+    <div class="columns is-multiline">
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A post-apocalyptic bus interior with rusted chairs bolted to the floor.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/001.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A luxurious desert tent made of flowing cream-colored fabric, with a brass oil lamp in the center and two low sofas draped in jewel-toned cushions with geometric embroidery.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/002.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A dwarven forge beer mug carved from volcanic stone with a charred wooden handle, and a glowing red rune pattern swirling just beneath the frothy liquid inside.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/003.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A clean beige cowboy hat with a bold autograph printed on the inner crown in black ink.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/004.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A lacquered chest with golden hinges and a silk interior embroidered with twin dragon motifs in gold thread.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/005.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A mystic's tent with deep purple silk drapes embroidered in constellations, and a black-lacquered desk topped with glowing runes and star charts.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/006.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+
+       <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A weathered wooden house with rusted nails, cracked siding, and a sagging roof.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/013.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A baroque-style wardrobe finished in glossy lacquer with gilded floral carvings along the edges
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/014.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+
+      
+       <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A mosaic glass lamp composed of jewel-toned shards held together in leaded segments.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/061.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A brass framed lantern with candle engraved with curling vine patterns.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/015.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+
+
+       <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          Fantasy igloo made of glowing crystals, iridescent surface and magical aura
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/097.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A medieval village stone well topped with a timber-framed tile roof, its stones darkened by centuries of rain.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/098.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A medieval treasure chest with iron bands and a velvet-lined interior embroidered with silver fleur-de-lis.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/099.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+
+
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A cable car adorned with ornate brass filigree patterns across its panels and rich mahogany wood textures polished to a deep sheen.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/007.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A sci-fi home theater with suspended screen casing, fiber optic star ceiling, and synthetic mesh seats.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/064.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A dark-stained wooden forest cabin with four hand-carved bunk beds under a dim lantern glow inside.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/009.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+
+
+       <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A painter's utility chest splattered with layered pigment stains and lacquered over for texture.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/019.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A classic car featuring wire-spoke wheels, quilted leather interior, and brass instrument dials.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/020.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A fantasy lamp forged in dark iron, with arcane symbols glowing faintly along its base.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/021.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+
+
+       <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A bohemian patchwork cabinet with fabric-covered drawers, tassels, and contrasting stitch lines.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/022.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A cursed relic wardrobe sealed with wax sigils and wrapped in cracked lacquer and threadbare lace.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/023.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A fantasy-themed home theater with mural-painted walls, canopy-covered seats, and carved runes lining the aisles.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/024.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+
+
+       <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A moss-covered circular stone well with a steep wooden shingle roof, nestled in a quiet forest clearing.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/010.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          Post-apocalyptic concrete bunker texture with cracks and moss.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/011.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A bright red vintage car with weathered tan leather seats and a dashboard featuring brass-accented dials.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/012.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+
+       <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A fantasy lantern wrapped in silver branches, with a blue-glowing enchanted candle at its core.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/025.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A luxurious cable car adorned with golden frame details and velvet upholstered chairs inside.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/028.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+
+       <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A lamp with stained glass panels arranged in floral patterns and outlined in dark soldered seams.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/041.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A lacquered cabinet with inset mother-of-pearl drawers and carved cloud motif handles.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/042.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A fantasy necromancer's wardrobe carved with runes and studded with polished bone accents.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/043.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+
+       <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A cyberpunk-style home theater with glowing floor lines, chrome wall insets, and synthetic leather seats.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/044.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A stained glass lantern with floral leadwork, casting colored light from the candle within.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/045.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A classic car trimmed in oxidized brass, gear-motif panels, and rotating dashboard gauges.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/060.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+
+      
+
+       <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A coral reef house with prismarine walls, bubble columns, and glowing sea lanterns.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/016.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A lacquered oriental wardrobe with painted cranes and wave motifs on the inner back panels.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/017.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A bohemian artisan's toolbox painted in layered mandala motifs and distressed edges.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/018.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+
+      
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A marble-top dresser with polished stone drawers and gilded trim along every edge
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/062.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A gothic wardrobe with matte black wood, silver inlaid filigree, and iron claw hinges.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/063.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+
+
+      <div class="column is-one-third has-text-centered">
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">
+          A paper-cut shadow lamp casting intricate silhouettes from a backlit patterned screen.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/1_qualitative/081.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+
+
+
+    </div>
+  </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="hero teaser" id="adaptibility">
+  <div style="margin: 2rem 0;"></div>
+  <div class="container is-max-desktop">
+    
+    <div class="columns is-centered has-text-centered">
+      <h2 class="title is-3">Separate Prompt Conditioning for Inner and Outer Surfaces</h2>
+    </div>
+    <div class="content has-text-justified">
+      <p>
+        A key advantage of GOATex is its ability to support distinct prompts for exterior and interior mesh regions—corresponding to hit level 1 and deeper layers, respectively—thanks to our progressive, layered texturing framework.
+      </p>
+    </div>
+  </div>
+  </div>
+
+
+<section class="hero teaser" id="adaptibility">
+  <div class="container is-max-desktop">
+    <div style="margin: 3rem 0;"></div>
+    <div class="columns is-centered has-text-centered">
+      <h2 class="title is-4">1. Multiple Interior Styles</h2>
+    </div>
+
+    <div style="margin: 2rem 0;"></div>
+
+    <div class="columns is-vcentered">
+      <div class="column is-one-quarter has-text-centered" style="border-right: 2px dashed #ccc;">
+        <p class="title is-5">Outer Prompt:</p>
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 5em; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+          A baroque-style wardrobe finished in glossy lacquer with gilded floral carvings along the edges.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/2_multiple/base.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        </div>
+      </div>
+
+      <div class="column">
+    <div class="columns is-multiline">
+      <!-- 1~3 -->
+      <div class="column is-one-third has-text-centered">
+        <p class="title is-5">Inner Prompt:</p>
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 5em; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+          An interior painted as a night sky mural with a comet trailing across the ceiling and nebula clouds around the edges.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/2_multiple/001.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <p class="title is-5">Inner Prompt:</p>
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 5em; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+          An interior gilded entirely in reflective gold leaf, creating a blinding, ornate enclosure.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/2_multiple/002.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <p class="title is-5">Inner Prompt:</p>
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 5em; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+          An interior illustrated in ink with an ancient map of the stars, seas, and lost kingdoms.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/2_multiple/003.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+
+      <!-- 4~6 -->
+      <div class="column is-one-third has-text-centered">
+        <p class="title is-5">Inner Prompt:</p>
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 5em; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+          A baroque-style wardrobe finished in glossy lacquer with gilded floral carvings along the edges.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/2_multiple/004.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <p class="title is-5">Inner Prompt:</p>
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 5em; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+          An interior painted in mural style with a tree of life whose roots coil into the base and branches stretch across the upper wall.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/2_multiple/005.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <p class="title is-5">Inner Prompt:</p>
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 5em; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+          An interior painted with a cathedral window motif, each 'pane' depicting a different mythic scene.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/2_multiple/006.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+
+      <!-- 7~9 -->
+      <div class="column is-one-third has-text-centered">
+        <p class="title is-5">Inner Prompt:</p>
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 5em; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+          An interior wallpapered with faded floral damask and small gold-leaf crosses pressed into the corners.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/2_multiple/007.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <p class="title is-5">Inner Prompt:</p>
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 5em; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+          An interior woven with tapestry depicting a lunar eclipse over a mountain ridge under a field of stars.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/2_multiple/008.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <p class="title is-5">Inner Prompt:</p>
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 5em; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+          An interior covered in cracked mirror tiles that distort reflections into eerie fragments.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/2_multiple/009.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+
+<section class="hero teaser" id="adaptibility">
+  <div style="margin: 2rem 0;"></div>
+  <div class="container is-max-desktop">
+    <!-- Multi Prompt 1-->
+    <div style="margin: 3rem 0;"></div>
+    <div class="columns is-centered has-text-centered">
+      <h2 class="title is-4">2. Exterior Specific Prompt Removal</h2>
+    </div>
+
+    <div style="margin: 2rem 0;"></div>
+    <div class="columns is-vcentered">
+      <div class="column is-one-third has-text-centered" style="border-right: 2px dashed #ccc;">
+        <p class="title is-5">Outer Prompt:</p>
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+          Cozy wooden medieval house, covered with snow outside.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/3_removal/base.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        </div>
+      </div>
+
+      <div class="column">
+    <div class="columns is-multiline">
+      <!-- 1~2 -->
+      <div class="column is-half has-text-centered">
+        <p class="title is-5">Inner Prompt:</p>
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+          Cozy wooden medieval house, covered with snow outside.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/3_removal/001.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-half has-text-centered">
+        <p class="title is-5">Inner Prompt:</p>
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+          Cozy wooden medieval house.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/3_removal/002.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+  </div>
+</section>
+
+<section class="hero teaser" id="adaptibility">
+  <div style="margin: 2rem 0;"></div>
+  <div class="container is-max-desktop">
+    <!-- Multi Prompt 1-->
+    <div style="margin: 3rem 0;"></div>
+    <div class="columns is-centered has-text-centered">
+      <h2 class="title is-4">3. Interior Specific Prompt Addition</h2>
+    </div>
+
+    <div style="margin: 2rem 0;"></div>
+
+    <div class="columns is-vcentered">
+      <div class="column is-one-quarter has-text-centered" style="border-right: 2px dashed #ccc;">
+        <p class="title is-5">Outer Prompt:</p>
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+          A brass framed lantern.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/4_addition/001.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        </div>
+      </div>
+
+      <div class="column">
+    <div class="columns is-multiline">
+      <!-- 1~3 -->
+      <div class="column is-one-third has-text-centered">
+        <p class="title is-5">Inner Prompt:</p>
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+          A brass framed lantern with candle engraved with curling vine patterns.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/4_addition/002.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <p class="title is-5">Inner Prompt:</p>
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+          A brass framed lantern with stained glass candle.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/4_addition/003.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+      <div class="column is-one-third has-text-centered">
+        <p class="title is-5">Inner Prompt:</p>
+        <div style="display: flex; flex-direction: column;">
+        <div class="video-caption" style="height: 6em; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+          A brass framed lantern with violet candle.
+        </div>
+        <video width="100%" controls autoplay muted loop playsinline preload="metadata">
+          <source src="./static/videos/4_addition/004.mp4" type="video/mp4" />
+        </video>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+  </div>
+</section>
+<!-- <div style="margin: 2rem 0;"></div> -->
+
+
+
 
 
 
